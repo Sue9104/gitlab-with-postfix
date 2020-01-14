@@ -1,0 +1,31 @@
+version: "3.6"
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    #hostname: sgi.registry.ace.com
+    ports:
+      - "8022:22"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./conf/omnibus_config.rb:/etc/gitlab/omnibus_config.rb
+      - ./gitlab/config:/etc/gitlab
+      - ./gitlab/logs:/var/log/gitlab
+      - ./gitlab/data:/var/opt/gitlab
+    environment:
+       GITLAB_OMNIBUS_CONFIG: "from_file('/etc/gitlab/omnibus_config.rb')"
+    depends_on:
+      - postfix
+  postfix:
+    build: .
+    ports:
+      - "8025:25"
+    volumes:
+      - ./gitlab/logs/postfix:/var/log
+      - ./gitlab/postfix:/var/spool/postfix
+  runner:
+    image: gitlab/gitlab-runner:alpine
+    volumes:
+      - ./gitlab/runner:/etc/gitlab-runner
+    deploy:
+      replicas: 2

@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+/etc/init.d/postfix start
+/etc/init.d/postfix abort
+/usr/lib/postfix/sbin/master -c /etc/postfix -d 2>&1
+

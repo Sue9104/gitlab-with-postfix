@@ -1,0 +1,1 @@
+0 2 * * * docker-compose exec gitlab gitlab-rake gitlab:backup:create CRON=1
